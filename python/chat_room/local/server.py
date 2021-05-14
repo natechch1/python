@@ -13,9 +13,8 @@ if SERVER.startswith('127.0.'):
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT = "!DISCONNECT"
-
+# create to store all client and used for sending the msg from other client 
 list_of_client = {}
-
 
 #create a new socket, AF_INET is type? and SOCK_STREAM is method?
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
@@ -38,11 +37,11 @@ def handle_client(connect, address):
         if message:
             if message == DISCONNECT:
                 connected = False
-                list_of_client.pop(connect)
-            broadcast(message, connect)
+            if len(list_of_client) > 1:
+                broadcast(message, connect)
             print(f"[{address}] {message}")
     connect.close()      
-            # connect.send(f"[{SERVER}] Message was received".encode(FORMAT))
+            
         
 def broadcast(msg, conn):
     try:
@@ -52,8 +51,11 @@ def broadcast(msg, conn):
                     # message_length = len(message)
                     # send_length = str(message_length).encode(FORMAT)
                     # send_length += b' ' * (HEADER - len(send_length))
-                    msg = "\n[" + str(list_of_client.get(conn)) + "] " + msg
+                    msg = "[" + str(list_of_client.get(conn)) + "] " + msg + "\n"
                     client.send(msg.encode())
+        if msg == DISCONNECT:
+            list_of_client.pop(conn)    
+
     except BrokenPipeError: 
         # Python flushes standard streams on exit; redirect remaining output 
         # to devnull to avoid another BrokenPipeError at shutdown 
@@ -68,11 +70,14 @@ def start():
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         connect, address = server.accept()
-        connect.send("Welcome to the chat room!".encode())
+        connect.send(f"Welcome to the chat room!\nThere are {threading.activeCount()} user".encode())
         s_name = connect.recv(1024)
         s_name = s_name.decode()
-        list_of_client[connect] = s_name  # contain all client who join the server
+        if s_name not in list_of_client:
+            list_of_client[connect] = s_name  # contain all client who join the server
         # threading._start_new_thread(handle_client,(connect,address))
+        user_info = "had connected! :)\n"
+        broadcast(user_info, connect)
         thread = threading.Thread(target=handle_client, args=(connect, address))
         #connect.send(f"[ACTIVE CONNECTIONS] {threading.activeCount()}".encode(FORMAT))
         # thread.daemon = True
