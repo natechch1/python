@@ -4,10 +4,11 @@ def main():
     wordBase = ["nate", "shit", "god", "what", "day"]
     playAgain = True
     while playAgain == True:
-        guessGame(wordBase)
-        tryAgain = input("Do u want try again? (Y/N) :")
-        if tryAgain == "N":
-            playAgain = False
+      print(f"\nThe word base : {wordBase}")
+      guessGame(wordBase)
+      tryAgain = input("Do u want try again? (Y/N) :")
+      if tryAgain == "N":
+          playAgain = False
         
 
 
