@@ -5,6 +5,7 @@ HEADER = 16
 PORT = 5050
 FORMAT = 'utf-8'
 SERVER = "192.168.2.27"
+#SERVER = "192.168.2.111"
 ADDR = (SERVER, PORT)
 DISCONNECT = "!DISCONNECT"
 
@@ -39,22 +40,21 @@ def send():
     
 
 def receive():
+    #  for message in iter(lambda: client.recv(1024).decode(), ''):
+    #     print(":", message)
+    #     print("")
     while True:
         print(client.recv(1024).decode())
 
 
-def start():
-    print(client.recv(1024).decode())
-    name = input(str("Please enter your username : "))
-    client.send(name.encode())
+print(client.recv(1024).decode())
+name = input(str("Please enter your username : "))
+client.send(name.encode())
 
-    background_receive = threading.Thread(target=receive)
-    # background_send = threading.Thread(target=send)
-    background_receive.daemon = True
-    # background_send.daemon = True
-    background_receive.start()
-    # background_send.start()
-    send()
-    client.close()
-
-start()
+background_receive = threading.Thread(target=receive)
+# background_send = threading.Thread(target=send)
+background_receive.daemon = True
+# background_send.daemon = True
+background_receive.start()
+send()
+client.close()
