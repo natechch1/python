@@ -11,6 +11,7 @@ ADDR = (SERVER, PORT)
 DISCONNECT = "!DISCONNECT"
 
 
+
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect(ADDR)
 
@@ -18,7 +19,7 @@ def send():
     try:
         while True:
             clientChat = input()
-            if clientChat == "stop":
+            if clientChat == "stop": 
                 client.send(DISCONNECT.encode())
                 break
             # message = clientChat.encode(FORMAT)
@@ -35,8 +36,12 @@ def send():
     
 
 def receive():
-    while True:
-        print(client.recv(1024).decode())
+    try:
+        while True:
+            print(client.recv(1024).decode())
+    except Exception:
+        print("bye :)")
+     
 
 
 def start():
