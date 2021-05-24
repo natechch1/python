@@ -31,28 +31,28 @@ def handle_client(connect, address):
         # if msg_length: # avoid the msg is null
         #     msg_length = int(msg_length)  # translate it to int
         #     msg = connect.recv(msg_length).decode(FORMAT) # receiving the acual msg 
-            
         #     msg_to_send = "<" + str(address[1]) + "> " + msg
         message = connect.recv(1024).decode()
         if message:
             if message == DISCONNECT:
                 connected = False
-            if len(list_of_client) > 1:
-                broadcast(message, connect)
+            broadcast(message, connect)
             print(f"[{address}] {message}")
     connect.close()      
             
         
 def broadcast(msg, conn):
     try:
-        for client in list_of_client:
-            if client != conn:
-                    # message = msg.encode(FORMAT)
-                    # message_length = len(message)
-                    # send_length = str(message_length).encode(FORMAT)
-                    # send_length += b' ' * (HEADER - len(send_length))
-                    msg = "[" + str(list_of_client.get(conn)) + "] " + msg + "\n"
-                    client.send(msg.encode())
+        if len(list_of_client) > 1:
+            for client in list_of_client:
+                if client != conn:
+                        # message = msg.encode(FORMAT)
+                        # message_length = len(message)
+                        # send_length = str(message_length).encode(FORMAT)
+                        # send_length += b' ' * (HEADER - len(send_length))
+                        new_msg = "[" + str(list_of_client.get(conn)) + "] " + msg + "\n"
+                        #print(str(msg) + "\n" + str(list_of_client.get(conn)) + "\n" + str(conn))
+                        client.send(new_msg.encode())
         if msg == DISCONNECT:
             list_of_client.pop(conn)    
 
