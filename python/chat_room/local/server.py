@@ -79,13 +79,8 @@ def start():
         user_info = "had connected! :)\n"
         broadcast(user_info, connect)
         thread = threading.Thread(target=handle_client, args=(connect, address))
-        #connect.send(f"[ACTIVE CONNECTIONS] {threading.activeCount()}".encode(FORMAT))
-        # thread.daemon = True
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
-        # connect.send(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}".encode(FORMAT))
-        # thread = threading.Thread(target=handle_client, args=(connect, address))
-        # thread.start()
         
       
 
